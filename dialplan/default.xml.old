@@ -19,50 +19,6 @@
 	<action application="deflect" data="${destination_number}"/>
       </condition>
     </extension>
-
-
-    <extension name="extension-intercom">
-      <condition field="destination_number" expression="^8(10[01][0-9])$">
-	<action application="set" data="dialed_extension=$1"/>
-	<action application="export" data="sip_auto_answer=true"/>
-	<action application="bridge" data="user/${dialed_extension}@${domain_name}"/>
-      </condition>
-    </extension>
-
-    <!--
-	 dial the extension (1000-1019) for 30 seconds and go to voicemail if the
-	 call fails (continue_on_fail=true), otherwise hang up after a successful
-	 bridge (hangup_after_bridge=true)
-    -->
-    <extension name="Local_Extension">
-      <condition field="destination_number" expression="^(10[01][0-9])$">
-	<action application="export" data="dialed_extension=$1"/>
-	<!-- bind_meta_app can have these args <key> [a|b|ab] [a|b|o|s] <app> -->
-	<action application="bind_meta_app" data="1 b s execute_extension::dx XML features"/>
-	<action application="bind_meta_app" data="2 b s record_session::$${recordings_dir}/${caller_id_number}.${strftime(%Y-%m-%d-%H-%M-%S)}.wav"/>
-	<action application="bind_meta_app" data="3 b s execute_extension::cf XML features"/>
-	<action application="bind_meta_app" data="4 b s execute_extension::att_xfer XML features"/>
-	<action application="set" data="ringback=${us-ring}"/>
-	<action application="set" data="transfer_ringback=$${hold_music}"/>
-	<action application="set" data="call_timeout=30"/>
-	<!-- <action application="set" data="sip_exclude_contact=${network_addr}"/> -->
-	<action application="set" data="hangup_after_bridge=true"/>
-	<!--<action application="set" data="continue_on_fail=NORMAL_TEMPORARY_FAILURE,USER_BUSY,NO_ANSWER,TIMEOUT,NO_ROUTE_DESTINATION"/> -->
-	<action application="set" data="continue_on_fail=true"/>
-	<action application="hash" data="insert/${domain_name}-call_return/${dialed_extension}/${caller_id_number}"/>
-	<action application="hash" data="insert/${domain_name}-last_dial_ext/${dialed_extension}/${uuid}"/>
-	<action application="set" data="called_party_callgroup=${user_data(${dialed_extension}@${domain_name} var callgroup)}"/>
-	<action application="hash" data="insert/${domain_name}-last_dial_ext/${called_party_callgroup}/${uuid}"/>
-	<action application="hash" data="insert/${domain_name}-last_dial_ext/global/${uuid}"/>
-	<!--<action application="export" data="nolocal:rtp_secure_media=${user_data(${dialed_extension}@${domain_name} var rtp_secure_media)}"/>-->
-	<action application="hash" data="insert/${domain_name}-last_dial/${called_party_callgroup}/${uuid}"/>
-	<action application="bridge" data="user/${dialed_extension}@${domain_name}"/>
-	<action application="answer"/>
-	<action application="sleep" data="1000"/>
-	<action application="bridge" data="loopback/app=voicemail:default ${domain_name} ${dialed_extension}"/>
-      </condition>
-    </extension>
-
     <!--
 	start a dynamic conference with the settings of the "default" conference profile in conference.conf.xml
     -->
@@ -127,29 +83,6 @@
       </condition>
     </extension>
 
-    <!-- dial the FreeSWITCH conference via SIP-->
-    <extension name="freeswitch_public_conf_via_sip">
-      <condition field="destination_number" expression="^9(888|8888|1616|3232)$">
-	<action application="export" data="hold_music=silence"/>
-	<!--
-	     This will take the SAS from the b-leg and send it to the display on the a-leg phone.
-	     Known working with Polycom and Snom maybe others.
-	-->
-	<!--
-	<action application="set" data="exec_after_bridge_app=${sched_api(+4 zrtp expand uuid_display ${uuid} \${uuid_getvar(\${uuid_getvar(${uuid} signal_bond)} zrtp_sas1_string )}  \${uuid_getvar(\${uuid_getvar(${uuid} signal_bond)} zrtp_sas2_string )} )}"/>
-	<action application="export" data="nolocal:zrtp_secure_media=true"/>
-	-->
-	<action application="bridge" data="sofia/${use_profile}/$1@conference.freeswitch.org"/>
-      </condition>
-    </extension>
-
-    <extension name="delay_echo">
-      <condition field="destination_number" expression="^9195$">
-	<action application="answer"/>
-	<action application="delay_echo" data="5000"/>
-      </condition>
-    </extension>
-
     <extension name="echo">
       <condition field="destination_number" expression="^9196$">
 	<action application="answer"/>
@@ -157,26 +90,10 @@
       </condition>
     </extension>
 
-    <extension name="milliwatt">
-      <condition field="destination_number" expression="^9197$">
-	<action application="answer"/>
-	<action application="playback" data="{loops=-1}tone_stream://%(251,0,1004)"/>
-      </condition>
-    </extension>
-
     <extension name="tone_stream">
       <condition field="destination_number" expression="^9198$">
 	<action application="answer"/>
 	<action application="playback" data="{loops=10}tone_stream://path=${conf_dir}/tetris.ttml"/>
-      </condition>
-    </extension>
-
-    <extension name="laugh break">
-      <condition field="destination_number" expression="^9386$">
-        <action application="answer"/>
-        <action application="sleep" data="1500"/>
-        <action application="playback" data="phrase:funny_prompts"/>
-        <action application="hangup"/>
       </condition>
     </extension>
 
