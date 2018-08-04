@@ -157,10 +157,12 @@ Freeswitch has to be started at least once before this step to make sure the cer
 ```
 cat /etc/letsencrypt/live/somedomain.com/fullchain.pem /etc/letsencrypt/live/somedomain.com/privkey.pem > /usr/local/freeswitch/certs/wss.pem
 ```
-Uncomment the following line in /etc/freeswitch/directory/default.xml, or whatever directory you would like to be able to use mod_verto for WebRTC.
+Uncomment the following line in /usr/local/freeswitch/conf/directory/default.xml, or whatever directory you would like to be able to use mod_verto for WebRTC.
 ```
 <param name="jsonrpc-allowed-event-channels" value="demo,conference,presence"/>
 ```
+
+### Replace config files with github repo
 
 ### Get ready for AWS
 https://freeswitch.org/confluence/display/FREESWITCH/Amazon+EC2
