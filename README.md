@@ -14,7 +14,7 @@ Linux Debian Jessie 64-Bit
 ### Install 
 These commands will install the apache webserver and certbot to get valid SSL-Certificates from Let's encrypt. More information: https://certbot.eff.org/
 ```
-$ echo "deb http://ftp.debian.org/debian jessie-backports main" >> /etc/sources.list
+$ echo "deb http://ftp.debian.org/debian jessie-backports main" >> /etc/apt/sources.list
 $ apt update && apt upgrade
 $ apt install certbot -t jessie-backports
 $ apt install apache2
