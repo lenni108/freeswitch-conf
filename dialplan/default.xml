@@ -83,6 +83,14 @@
       </condition>
     </extension>
 
+    <extension name="cdquality_conferences">
+      <condition field="destination_number" expression="^(8\d{8})-mod$">
+	<action application="answer"/>
+  <action application="set" data="conference_member_flags=moderator"/>
+	<action application="conference" data="$1-${domain_name}@video-mcu-stereo"/>
+      </condition>
+    </extension>
+
     <extension name="echo">
       <condition field="destination_number" expression="^666$">
 	<action application="answer"/>
