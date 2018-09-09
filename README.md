@@ -14,10 +14,10 @@ Linux Debian Jessie 64-Bit
 ### Install 
 These commands will install the apache webserver and certbot to get valid SSL-Certificates from Let's encrypt. More information: https://certbot.eff.org/
 ```
-$ echo "deb http://ftp.debian.org/debian jessie-backports main" >> /etc/sources.list
-$ apt update && apt upgrade
-$ apt install certbot -t jessie-backports
-$ apt install apache2
+$ echo "deb http://ftp.debian.org/debian jessie-backports main" >> /etc/apt/sources.list
+$ apt-get update && apt-get upgrade
+$ apt-get install certbot -t jessie-backports
+$ apt-get install apache2
 ```
 You will also want to update /etc/hosts and /etc/hostname to reflect the domain name you will be using.
 
@@ -157,10 +157,12 @@ Freeswitch has to be started at least once before this step to make sure the cer
 ```
 cat /etc/letsencrypt/live/somedomain.com/fullchain.pem /etc/letsencrypt/live/somedomain.com/privkey.pem > /usr/local/freeswitch/certs/wss.pem
 ```
-Uncomment the following line in /etc/freeswitch/directory/default.xml, or whatever directory you would like to be able to use mod_verto for WebRTC.
+Uncomment the following line in /usr/local/freeswitch/conf/directory/default.xml, or whatever directory you would like to be able to use mod_verto for WebRTC.
 ```
 <param name="jsonrpc-allowed-event-channels" value="demo,conference,presence"/>
 ```
+
+### Replace config files with github repo
 
 ### Get ready for AWS
 https://freeswitch.org/confluence/display/FREESWITCH/Amazon+EC2
