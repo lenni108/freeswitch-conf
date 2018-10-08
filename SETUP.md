@@ -1,16 +1,14 @@
 # Setup FreeSWITCH
 ---
-In this project FreeSWITCH is used as server for webRTC.
-
-Info Article:
-http://www.linuxpromagazine.com/Issues/2009/106/FreeSWITCH
-
+These Guidelines should help you to configure Freeswitch for production use with the Cybalounge software.
 
 ## Requirements
 
 Linux Debian Jessie 64-Bit
+(other Distributions might work, but Debian Jessie is by far the easiest one)
 
 ## Install Apache and issue SSL-Certificats (Let's encrypt)
+If you want to use other SSL-Certificates just install apache. Note that selfsigned Certificates won't work!
 ### Install 
 These commands will install the apache webserver and certbot to get valid SSL-Certificates from Let's encrypt. More information: https://certbot.eff.org/
 ```
@@ -33,7 +31,12 @@ and in /etc/hostname replace the current name with your hostname.
 ### Issue certificate
 Next, we will create our certificate. Execute the following command and fill out any necessary fields.
 ```
-certbot certonly --webroot -w /var/www/html/ -d <somehostname>
+$ certbot certonly --webroot -w /var/www/html/ -d <somehostname>
+```
+As Let's Encryt Certificates expire after 90 days you want to renew it constantly. I chose to do that with a cronjob every week.
+```
+$ crontab -e
+0 0 * * 7 certbot renew
 ```
 
 ### Configure SSL for HTTP
@@ -72,26 +75,26 @@ Enable the new virtual host with a2ensite ``pbx.somedomain.com.conf``. This will
 ## Install FreeSWITCH
 https://www.youtube.com/watch?v=TyUhpLC8OIM
 ```
-# wget -O - https://files.freeswitch.org/repo/deb/debian/freeswitch_archive_g0.pub | apt-key add -
+$ wget -O - https://files.freeswitch.org/repo/deb/debian/freeswitch_archive_g0.pub | apt-key add -
  
-# echo "deb http://files.freeswitch.org/repo/deb/freeswitch-1.6/ jessie main" > /etc/apt/sources.list.d/freeswitch.list
-# apt-get update
-# apt-get install -y --force-yes freeswitch-video-deps-most
+$ echo "deb http://files.freeswitch.org/repo/deb/freeswitch-1.6/ jessie main" > /etc/apt/sources.list.d/freeswitch.list
+$ apt-get update
+$ apt-get install -y --force-yes freeswitch-video-deps-most
  
-# cd /usr/src/
-# git clone https://freeswitch.org/stash/scm/fs/freeswitch.git -bv1.6 freeswitch
-# cd freeswitch
+$ cd /usr/src/
+$ git clone https://freeswitch.org/stash/scm/fs/freeswitch.git -bv1.6 freeswitch
+$ cd freeswitch
  
-# ./bootstrap.sh -j
-# ./configure
-# make
-# make install
+$ ./bootstrap.sh -j
+$ ./configure
+$ make
+$ make install
 ```
 Install sounds:
 ```
 $ make all cd-sounds-install cd-moh-install
 ```
-Create SimLinks that Binaries are excessible everywhere:
+Create SimLinks that Binaries are excessible everywhere (not necessary):
 ```
 $ ln -s /usr/local/freeswitch/bin/fs_cli /usr/bin/fs_cli
 ```
@@ -162,7 +165,13 @@ Uncomment the following line in /usr/local/freeswitch/conf/directory/default.xml
 <param name="jsonrpc-allowed-event-channels" value="demo,conference,presence"/>
 ```
 
-### Replace config files with github repo
+### Setup Configuration Files
+The congiguration files are ready to go in this repository. Delete (or rename) the existing conf-Folder in /usr/local/freeswitch,  clone this repository and name it conf. You should restart Freeswitch now.
+```
+$ rm -r /usr/local/freesswitch/conf
+$ git clone [this repository] conf
+$ systemctl restart freeswitch
+```
 
 ### Get ready for AWS
 https://freeswitch.org/confluence/display/FREESWITCH/Amazon+EC2
@@ -185,3 +194,20 @@ The alternative to the above commands is to hard code the external IP addresses.
 ```
 <param name="ext-rtp-ip" data="[AWS EIP]">
 ```
+
+## Get ready for production use
+### Set loglevel
+If used as productive server you need to lower the loglevel otherwise the logfiles will overflow at some point. Open the file console.conf.xml and edit the setting part.
+```
+$ nano /usr/local/freeswitch/conf/autoload_configs/console.conf.xml
+```
+The setting part should now look like this:
+```
+<settings>
+  <param name="colorize" value="true"/>
+  <param name="loglevel" value="info"/>
+</settings>
+```
+
+# Author
+Lennart Paul - Metaverse School GmbH
