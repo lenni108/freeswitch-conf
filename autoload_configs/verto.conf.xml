@@ -28,7 +28,6 @@
 
       <param name="ext-rtp-ip" value="3.121.63.21"/>
 
-
       <param name="local-network" value="localnet.auto"/>
       <param name="outbound-codec-string" value="opus,vp8"/>
       <param name="inbound-codec-string" value="opus,vp8"/>
