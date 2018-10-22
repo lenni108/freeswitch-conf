@@ -26,7 +26,7 @@
 
       <!-- WICHTIG für FreeSWITCH in der Cloud (AWS) -->
 
-      <param name="ext-rtp-ip" value="18.185.254.94"/>
+      <param name="ext-rtp-ip" value="3.121.63.21"/>
 
 
       <param name="local-network" value="localnet.auto"/>
