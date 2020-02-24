@@ -165,27 +165,28 @@ Uncomment the following line in /usr/local/freeswitch/conf/directory/default.xml
 <param name="jsonrpc-allowed-event-channels" value="demo,conference,presence"/>
 ```
 
-### Replace config files with github repo
-Delete or rename the old conf folder and replace it with this repository. The folder name has to be again conf.
+### Setup Configuration Files
+The congiguration files are ready to go in this repository. Delete (or rename) the existing conf-Folder in /usr/local/freeswitch,  clone this repository and name it conf. You should restart Freeswitch now.
+```
+$ rm -r /usr/local/freesswitch/conf
+$ git clone [this repository] conf
+$ systemctl restart freeswitch
+```
 
 ### Open Ports 
-All of these Ports need to be opened in order for Freeswitch to run as intended
-TCP: 80 for http
-TCP: 5060 - 5061  for Internal SIP TCP
-TCP: 5080 – 5081 for external SIP TCP
-TCP:  443 for HTTPS
-TCP: 8081 -  8082 à WSS
-TCP: 22 for SSH
-TCP: 8021 for Event Sockets
-UDP: 5060 – 5061 for Internal SIP UDP
-UDP: 5080 – 5081 for External SIP UDP
-UDP: 16384 – 32768 for FS MediaPorts
-
-### Finalize
-In the end all you have to do is start the Freeswitch Server. 
-```
-/usr/local/freeswitch/bin/freeswitch
-```
+All of these Ports need to be opened in order for Freeswitch to run as intended.
+| Protocol | Port | Used for |
+|---|---|---|
+| TCP | 80 | HTTP |
+| TCP | 5060 -  5061 | Internal SIP TCP |
+| TCP | 5080 – 5081 | External SIP TCP |
+| TCP | 443 | HTTPS |
+| TCP | 8081 -  8082 | WSS |
+| TCP | 22 | SSH |
+| UDP | 8021 | Event Sockets |
+| UDP | 5060 – 5061 | Internal SIP UDP |
+| UDP | 5080 – 5081 | External SIP UDP |
+| UDP | 16384 – 32768 | FS MediaPorts |
 
 ### Some extro work to get ready for AWS
 https://freeswitch.org/confluence/display/FREESWITCH/Amazon+EC2
@@ -208,3 +209,26 @@ The alternative to the above commands is to hard code the external IP addresses.
 ```
 <param name="ext-rtp-ip" data="[AWS EIP]">
 ```
+
+## Get ready for production use
+### Set loglevel
+If used as productive server you need to lower the loglevel otherwise the logfiles will overflow at some point. Open the file console.conf.xml and edit the setting part.
+```
+$ nano /usr/local/freeswitch/conf/autoload_configs/console.conf.xml
+```
+The setting part should now look like this:
+```
+<settings>
+  <param name="colorize" value="true"/>
+  <param name="loglevel" value="info"/>
+</settings>
+```
+
+### Finalize - Start Server
+In the end all you have to do is start the Freeswitch Server. 
+```
+/usr/local/freeswitch/bin/freeswitch
+```
+
+# Author
+Lennart Paul - Metaverse School GmbH
