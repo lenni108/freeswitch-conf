@@ -282,7 +282,7 @@
 	default: auto
   -->
 
-  <X-PRE-PROCESS cmd="set" data="bind_server_ip=3.121.63.21"/>
+  <X-PRE-PROCESS cmd="set" data="bind_server_ip=auto"/>
 
   <!-- NOTICE NOTICE NOTICE NOTICE NOTICE NOTICE NOTICE NOTICE NOTICE NOTICE NOTICE
        
@@ -303,7 +303,7 @@ default :stun:stun.freeswitch.org
 
   -->
 
-  <X-PRE-PROCESS cmd="set" data="external_rtp_ip=stun:3.121.63.21"/>
+  <X-PRE-PROCESS cmd="set" data="external_rtp_ip=stun:stun.freeswitch.org"/>
 
   <!-- external_sip_ip
       Used as the public IP address for SDP.
@@ -319,7 +319,7 @@ default: above
 
   -->
 
-  <X-PRE-PROCESS cmd="set" data="external_sip_ip=3.121.63.21"/>
+  <X-PRE-PROCESS cmd="set" data="external_sip_ip=stun:stun.freeswitch.org"/>
 
   <!-- unroll-loops
        Used to turn on sip loopback unrolling.

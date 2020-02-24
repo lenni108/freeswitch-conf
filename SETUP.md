@@ -1,3 +1,6 @@
+# OUTDATED!!!!
+
+
 # Setup FreeSWITCH
 ---
 These Guidelines should help you to configure Freeswitch for production use with the Cybalounge software.

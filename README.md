@@ -8,15 +8,14 @@ http://www.linuxpromagazine.com/Issues/2009/106/FreeSWITCH
 
 ## Requirements
 
-Linux Debian Jessie 64-Bit
+Linux Debin 10 Buster
 
 ## Install Apache and issue SSL-Certificats (Let's encrypt)
 ### Install 
 These commands will install the apache webserver and certbot to get valid SSL-Certificates from Let's encrypt. More information: https://certbot.eff.org/
 ```
-$ echo "deb http://ftp.debian.org/debian jessie-backports main" >> /etc/apt/sources.list
 $ apt-get update && apt-get upgrade
-$ apt-get install certbot -t jessie-backports
+$ apt-get install certbot
 $ apt-get install apache2
 ```
 You will also want to update /etc/hosts and /etc/hostname to reflect the domain name you will be using.
@@ -67,24 +66,28 @@ Then include the following configuration. Note, you will need to point the SSL c
         DirectoryIndex index.html
 </VirtualHost>
 ```
-Enable the new virtual host with a2ensite ``pbx.somedomain.com.conf``. This will create a symlink from sites-available to sites-enabled. Then Restart Apache2 to enable these changes with ``systemctl restart apache2``.
+Enable the new virtual host with ``a2ensite pbx.somedomain.com.conf``. This will create a symlink from sites-available to sites-enabled. Then Restart Apache2 to enable these changes with ``systemctl restart apache2``.
 
 ## Install FreeSWITCH
-https://www.youtube.com/watch?v=TyUhpLC8OIM
+https://freeswitch.org/confluence/display/FREESWITCH/Debian+10+Buster
 ```
-# wget -O - https://files.freeswitch.org/repo/deb/debian/freeswitch_archive_g0.pub | apt-key add -
+# apt-get update && apt-get install -yq gnupg2 wget lsb-release
+# wget -O - https://files.freeswitch.org/repo/deb/debian-release/fsstretch-archive-keyring.asc | apt-key add -
  
-# echo "deb http://files.freeswitch.org/repo/deb/freeswitch-1.6/ jessie main" > /etc/apt/sources.list.d/freeswitch.list
+# echo "deb http://files.freeswitch.org/repo/deb/debian-release/ `lsb_release -sc` main" > /etc/apt/sources.list.d/freeswitch.list
+# echo "deb-src http://files.freeswitch.org/repo/deb/debian-release/ `lsb_release -sc` main" >> /etc/apt/sources.list.d/freeswitch.list
+ 
 # apt-get update
-# apt-get install -y --force-yes freeswitch-video-deps-most
- 
+  
+#  apt-get build-dep freeswitch
+  
 # cd /usr/src/
-# git clone https://freeswitch.org/stash/scm/fs/freeswitch.git -bv1.6 freeswitch
-# cd freeswitch
- 
+# git clone https://github.com/signalwire/freeswitch.git -bv1.10 freeswitch
+#  cd freeswitch
+  
 # ./bootstrap.sh -j
 # ./configure
-# make
+#  make
 # make install
 ```
 Install sounds:
@@ -163,8 +166,28 @@ Uncomment the following line in /usr/local/freeswitch/conf/directory/default.xml
 ```
 
 ### Replace config files with github repo
+Delete or rename the old conf folder and replace it with this repository. The folder name has to be again conf.
 
-### Get ready for AWS
+### Open Ports 
+All of these Ports need to be opened in order for Freeswitch to run as intended
+TCP: 80 for http
+TCP: 5060 - 5061  for Internal SIP TCP
+TCP: 5080 – 5081 for external SIP TCP
+TCP:  443 for HTTPS
+TCP: 8081 -  8082 à WSS
+TCP: 22 for SSH
+TCP: 8021 for Event Sockets
+UDP: 5060 – 5061 for Internal SIP UDP
+UDP: 5080 – 5081 for External SIP UDP
+UDP: 16384 – 32768 for FS MediaPorts
+
+### Finalize
+In the end all you have to do is start the Freeswitch Server. 
+```
+/usr/local/freeswitch/bin/freeswitch
+```
+
+### Some extro work to get ready for AWS
 https://freeswitch.org/confluence/display/FREESWITCH/Amazon+EC2
 Make sure the requiered ports are open!!!
 
