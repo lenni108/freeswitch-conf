@@ -109,14 +109,14 @@
     <extension name="cdquality_conferences">
       <condition field="destination_number" expression="^(8\d{8})$">
 	<action application="answer"/>
-	<action application="conference" data="$1-${domain_name}@video-mcu-stereo"/>
+	<action application="conference" data="$1-${domain_name}@video-mcu-stereo++flags{mute}"/>
       </condition>
     </extension>
 
     <extension name="localbox_conferences">
       <condition field="destination_number" expression="^(9\d{8})$">
         <action application="answer"/>
-        <action application="conference" data="$1-${domain_name}@video-mcu-stereo"/>
+        <action application="conference" data="$1-${domain_name}@video-mcu-stereo++flags{mute}"/>
       </condition>
     </extension>
 
