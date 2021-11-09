@@ -160,6 +160,7 @@ Freeswitch has to be started at least once before this step to make sure the cer
 ```
 /usr/local/freeswitch/bin/freeswitch
 ```
+After starting the server, make sure to shut it down again by typing ``...`` and pressing Enter.
 ```
 cat /etc/letsencrypt/live/somedomain.com/fullchain.pem /etc/letsencrypt/live/somedomain.com/privkey.pem > /usr/local/freeswitch/certs/wss.pem
 ```
