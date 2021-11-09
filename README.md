@@ -158,6 +158,9 @@ $ systemctl enable freeswitch.service
 ### Install WSS certificates
 Freeswitch has to be started at least once before this step to make sure the certs folder is generated. Use the following command to append the certs to the wss.pem file.
 ```
+/usr/local/freeswitch/bin/freeswitch
+```
+```
 cat /etc/letsencrypt/live/somedomain.com/fullchain.pem /etc/letsencrypt/live/somedomain.com/privkey.pem > /usr/local/freeswitch/certs/wss.pem
 ```
 Uncomment the following line in /usr/local/freeswitch/conf/directory/default.xml, or whatever directory you would like to be able to use mod_verto for WebRTC.
